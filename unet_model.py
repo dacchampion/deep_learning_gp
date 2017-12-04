@@ -115,6 +115,6 @@ def create_model():
 
     adam_optimizer = Adam(lr=LEARNING_RATE)
     model = Model(inputs=x, outputs=y)
-    model.compile(loss='categorical_crossentropy', optimizer=adam_optimizer, metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy', optimizer=adam_optimizer, metrics=['categorical_accuracy'])
     print(model.summary())
     return model
