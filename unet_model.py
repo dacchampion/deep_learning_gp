@@ -6,9 +6,8 @@ from keras.layers.convolutional import MaxPooling2D
 from keras.optimizers import Adam
 
 NUM_CHANNELS = 4
-NUM_CLASSES = 2
 HEIGHT, WIDTH = 256, 256
-LEARNING_RATE = 0.0001
+LEARNING_RATE = 0.1
 
 
 def create_model():

@@ -3,6 +3,7 @@ import os
 import re
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
 
 NUM_FILES_PER_SAMPLE = 6
 NUM_SEGMENTS = 8
@@ -14,10 +15,9 @@ def args_parser():
     parser.add_argument("--in-dir", type=str, required=True, help="Input directory of images for classification")
     parser.add_argument("--target-dir", type=str, required=True, help="Output directory for target data set")
     parser.add_argument("--train-dir", type=str, required=True, help="Training directory data set")
-    parser.add_argument("--create-xv", action="store_false", help="Create or not cross-validation data set")
+    parser.add_argument("--xv-dir", type=str, required=False, help="Cross-validation directory data set")
     parser.add_argument("--xv-sample-rate", type=float, required=False, choices=np.arange(0.1, 0.4, 0.05),
                         help="Cross-Validation rate to be taken from training set")
-    parser.add_argument("--xv-dir", type=str, required=False, help="Cross-validation directory data set")
     return parser.parse_args()
 
 
@@ -55,8 +55,8 @@ def split_image_segments(src_image, num_segments, saving_path):
 
 
 def create_binary_gt(input_matrix):
-    binary_gt = np.zeros(input_matrix.shape, dtype=np.uint8)
-    binary_gt[input_matrix == 2] = 1
+    binary_gt = np.ones(input_matrix.shape, dtype=np.uint8)
+    binary_gt[input_matrix == 2] = 0
     return binary_gt
 
 
@@ -83,6 +83,9 @@ else:
 sites_tiles = {}
 sample_number = 0
 for file_name in files:
+    if file_name == '.DS_Store':
+        continue
+
     site, tile, f_type, f_ext = split_file_name(file_name)
 
     current_key = site + "_" + tile
@@ -119,5 +122,6 @@ for file_name in files:
                 sites_tiles[current_key] = None
                 split_image_segments(final_image, NUM_SEGMENTS,
                                      os.path.join(saving_dir, "{}_{}".format(site, tile)))
-                split_image_segments(create_binary_gt(gt_image), NUM_SEGMENTS,
+                y = create_binary_gt(gt_image)
+                split_image_segments(y, NUM_SEGMENTS,
                                      os.path.join(arguments.target_dir, "{}_{}".format(site, tile)))
