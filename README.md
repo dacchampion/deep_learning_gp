@@ -1,1 +1,1 @@
-# deep_learning_gp 4 guys this time
+# Building detection support files for Deep Learning project
